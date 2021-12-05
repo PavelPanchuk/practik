@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from kivy.core.window import Window
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -8,15 +7,17 @@ import threading
 import time
 import os.path
 from kivy.config import Config
+import datetime
+
 
 Config.set('kivy','window_icon','work-time.png')
 
 #android.minapi = 25
 
 
-check_file = os.path.exists('text.txt') # создани фали техт который является базой данных активностей
+check_file = os.path.exists('practikDB.txt') # создани фали техт который является базой данных активностей
 if (check_file ==False):
-    my_file = open("text.txt", "w+")
+    my_file = open("practikDB.txt", "w+")
 
 #Window.clearcolor = (0,75,0,130)
 
@@ -42,7 +43,7 @@ FloatLayout:
         size_hint_x: .3
         text: 'отдых'
         on_release:
-            app.do_print()
+            app.do_print(x=1)
             self.text = 'остановить' if app.is_printing else 'отдых'
 
     Button:
@@ -52,7 +53,7 @@ FloatLayout:
 
         text: 'работа'
         on_release:
-            app.do_print2()
+            app.do_print(x=2)
             self.text = 'остановить' if app.is_printing else 'работа'
 
 
@@ -63,8 +64,8 @@ FloatLayout:
 
         text: 'учеба'
         on_release:
-            app.do_print3()
-            self.text = 'остановить' if app.is_printing else 'учеба?'
+            app.do_print(x=3)
+            self.text = 'остановить' if app.is_printing else 'учеба'
     Button:
         pos:0,200
         size_hint_y: .1
@@ -72,7 +73,7 @@ FloatLayout:
 
         text: 'сон'
         on_release:
-            app.do_print4()
+            app.do_print(x=4)
             self.text = 'остановить' if app.is_printing else 'сон'
     Button:
         pos:300,100
@@ -81,7 +82,7 @@ FloatLayout:
 
         text: 'спорт'
         on_release:
-            app.do_print5()
+            app.do_print(x=5)
             self.text = 'остановить' if app.is_printing else 'спорт'
     Button:
         pos:300,200
@@ -90,15 +91,9 @@ FloatLayout:
 
         text: 'история'
         on_release:
-            app.history()
-
-
-
-
-
+            app.do_print(x=6)
 
 '''
-
 
 class MainApp(App):
     def __init__(self, **kwargs):
@@ -111,156 +106,123 @@ class MainApp(App):
         self.icon = 'work-time.png'
         return self.root_widget
 
-    def printer(self):
+    def relax(self):
+
         i = 0
 
         while self.is_printing:
-            self.root_widget.ids['debugarea'].text = f'вы отдыхаете {i}' + '\n'
+            self.root_widget.ids['debugarea'].text = f'вы отдыхаете {str(datetime.timedelta(seconds=i))}' + '\n'
             i += 1
             time.sleep(1)
-        with open("text.txt", "r") as f:
+        with open("practikDB.txt", "r") as f:
             text = f.read()
-
-        f = open('text.txt', 'w')
-        f.write(text + "вы отдыхали:cek=" + str(i))
+        f = open('practikDB.txt', 'w')
+        f.write(text + "вы отдыхали:=" + str(datetime.timedelta(seconds=i))+" ")
+        f.write(str(datetime.datetime.now()))
         f.write("\n")
         f.close()
 
-    def do_print(self):
-        if not self.is_printing:
-            self.is_printing = True
-            self.print_thread = threading.Thread(target=self.printer)
-            self.print_thread.start()
 
-        else:
-            self.is_printing = False
-            self.print_thread.join()
-            self.print_thread = None
 
-    def do_print2(self):
-        if not self.is_printing:
-            self.is_printing = True
-            self.print_thread = threading.Thread(target=self.printer2)
-            self.print_thread.start()
 
-        else:
-            self.is_printing = False
-            self.print_thread.join()
-            self.print_thread = None
-
-    def printer2(self):
+    def work(self):
         i = 0
 
         while self.is_printing:
-            self.root_widget.ids['debugarea'].text = f'вы работаете {i}' + '\n'
+            self.root_widget.ids['debugarea'].text = f'вы работаете {str(datetime.timedelta(seconds=i))}' + '\n'
             i += 1
             time.sleep(1)
-        with open("text.txt", "r") as f:
+        with open("practikDB.txt", "r") as f:
             text = f.read()
 
-        f = open('text.txt', 'w')
-        f.write(text + "вы работали:cek=" + str(i))
-        f.write("\n")
+        f = open('practikDB.txt', 'w')
+        f.write(text + "вы работали:=" +str(datetime.timedelta(seconds=i))+" ")
+        f.write(str(datetime.datetime.now()))
         f.close()
 
-    def do_print3(self):
-        if not self.is_printing:
-            self.is_printing = True
-            self.print_thread = threading.Thread(target=self.printer3)
-            self.print_thread.start()
 
-        else:
-            self.is_printing = False
-            self.print_thread.join()
-            self.print_thread = None
 
-    def printer3(self):
+    def teach(self):
         i = 0
 
         while self.is_printing:
-            self.root_widget.ids['debugarea'].text = f'вы учитесь {i}' + '\n'
+            self.root_widget.ids['debugarea'].text = f'вы учитесь {str(datetime.timedelta(seconds=i))}' + '\n'
             i += 1
             time.sleep(1)
-        with open("text.txt", "r") as f:
+        with open("practikDB.txt", "r") as f:
             text = f.read()
 
-        f = open('text.txt', 'w')
-        f.write(text + "вы учились:cek=" + str(i))
+        f = open('practikDB.txt', 'w')
+        f.write(text + "вы учились:=" + str(datetime.timedelta(seconds=i))+" ")
+        f.write(str(datetime.datetime.now()))
         f.write("\n")
         f.close()
 
-    def do_print4(self):
-        if not self.is_printing:
-            self.is_printing = True
-            self.print_thread = threading.Thread(target=self.printer4)
-            self.print_thread.start()
 
-        else:
-            self.is_printing = False
-            self.print_thread.join()
-            self.print_thread = None
-
-    def printer4(self):
+    def sleep(self):
         i = 0
 
         while self.is_printing:
-            self.root_widget.ids['debugarea'].text = f'вы спите {i}' + '\n'
+            self.root_widget.ids['debugarea'].text = f'вы спите {str(datetime.timedelta(seconds=i))}' + '\n'
             i += 1
             time.sleep(1)
-        with open("text.txt", "r") as f:
+        with open("practikDB.txt", "r") as f:
             text = f.read()
 
-        f = open('text.txt', 'w')
-        f.write(text + "вы спали:cek=" + str(i))
+        f = open('practikDB.txt', 'w')
+        f.write(text + "вы спали:=" + str(datetime.timedelta(seconds=i))+" ")
+        f.write(str(datetime.datetime.now()))
         f.write("\n")
         f.close()
 
-    def do_print5(self):
-        if not self.is_printing:
-            self.is_printing = True
-            self.print_thread = threading.Thread(target=self.printer5)
-            self.print_thread.start()
 
-        else:
-            self.is_printing = False
-            self.print_thread.join()
-            self.print_thread = None
-
-    def printer5(self):
+    def sport(self):
         i = 0
 
         while self.is_printing:
-            self.root_widget.ids['debugarea'].text = f'вы занимаетесь спортом {i}' + '\n'
+            self.root_widget.ids['debugarea'].text = f'вы занимаетесь спортом {str(datetime.timedelta(seconds=i))}' + '\n'
             i += 1
             time.sleep(1)
-        with open("text.txt", "r") as f:
+        with open("practikDB.txt", "r") as f:
             text = f.read()
 
-        f = open('text.txt', 'w')
-        f.write(text + "вы занимались спортом:cek=" + str(i))
+        f = open('practikDB.txt', 'w')
+        f.write(text + "вы занимались спортом:=" + str(datetime.timedelta(seconds=i))+" ")
+        f.write(str(datetime.datetime.now()))
         f.write("\n")
         f.close()
 
-    def history(self):
-        if not self.is_printing:
-            self.is_printing = True
-            self.print_thread = threading.Thread(target=self.his)
-            self.print_thread.start()
 
-        else:
-            self.is_printing = False
-            self.print_thread.join()
-            self.print_thread = None
+
 
     def his(self):
         i = 0
-
         while self.is_printing:
-            with open("text.txt", "r") as f:
+            with open("practikDB.txt", "r") as f:
                 text = f.read()
             self.root_widget.ids['debugarea'].text = text
-            i += 1
-            time.sleep(1)
 
+
+    def do_print(self,x):
+        if not self.is_printing:
+            self.is_printing = True
+            if x == 1:
+                self.print_thread = threading.Thread(target=self.relax)
+            elif x==2:
+                self.print_thread = threading.Thread(target=self.work)
+            elif x==3:
+                self.print_thread = threading.Thread(target=self.teach)
+            elif x==4:
+                self.print_thread = threading.Thread(target=self.sleep)
+            elif x==5:
+                self.print_thread = threading.Thread(target=self.sport)
+            elif x==6:
+                self.print_thread = threading.Thread(target=self.his)
+            self.print_thread.start()
+
+        else:
+            self.is_printing = False
+            self.print_thread.join()
+            self.print_thread = None
 
 MainApp().run()
